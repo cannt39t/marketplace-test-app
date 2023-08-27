@@ -1,0 +1,25 @@
+/* 
+  Localizable.strings
+  AvitoTestApp
+
+  Created by Илья Казначеев on 25.08.2023.
+  
+*/
+
+"CatalogString_tabTitle" = "Поиск";
+"FavoritesString_tabTitle" = "Избранное";
+"SalesString_tabTitle" = "Объявления";
+"MessangerString_tabTitle" = "Сообщения";
+"ProfileString_tabTitle" = "Профиль";
+
+"Search_placeHolder" = "Поиск ";
+"Search_inTheCityOf" = "в городе ";
+
+"Place_showButton" = "Показать на карте";
+
+"Call_button" = "Позвонить";
+"Message_button" = "Написать";
+
+"Decription_header" = "Описание";
+
+"Viewed_advCell" = "Просмотрено";
