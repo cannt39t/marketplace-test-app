@@ -12,6 +12,7 @@ import UIKit
 protocol CatalogDisplayLogic: AnyObject {
 	func displayAdvertisements(viewModel: Catalog.Advertisements.ViewModel) async
 	func updateSearchPlaceHolder(city: String) async
+	func displayError(error: Error) async
 }
 
 final class CatalogViewController: BaseCollectionController {
@@ -110,6 +111,7 @@ extension CatalogViewController {
 extension CatalogViewController: CatalogDisplayLogic {
 	
 	func displayAdvertisements(viewModel: Catalog.Advertisements.ViewModel) async {
+		state = .CONTENT
 		hideLoader()
 		dataSource = CatalogDataSource(advertisements: viewModel.advertisements)
 		collectionDelegete.router = router
@@ -122,6 +124,11 @@ extension CatalogViewController: CatalogDisplayLogic {
 			return
 		}
 		searchController.searchBar.placeholder = Search.placeHolder.localized + Search.inTheCityOf.localized + city
+	}
+	
+	func displayError(error: Error) async {
+		state = .ERROR
+		hideLoader()
 	}
 	
 }
@@ -149,6 +156,7 @@ extension CatalogViewController {
 extension CatalogViewController {
 	
 	func getAdvertisements() {
+		state = .LOADING
 		showLoader()
 		let request = Catalog.Advertisements.Request()
 		interactor?.getAdvertisements(request: request)

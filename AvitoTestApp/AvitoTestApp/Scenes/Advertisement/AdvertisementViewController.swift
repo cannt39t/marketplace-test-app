@@ -13,6 +13,7 @@ import UIKit
 
 protocol AdvertisementDisplayLogic: AnyObject {
     func displayAdvertisement(viewModel: Advertisement.Advertisement.ViewModel) async
+	func displayError(error: Error) async
 }
 
 final class AdvertisementViewController: BaseController {
@@ -174,6 +175,7 @@ extension AdvertisementViewController {
 extension AdvertisementViewController {
 	
     func getAdvertisement() {
+		state = .LOADING
 		showLoader()
 		let request = Advertisement.Advertisement.Request()
         interactor?.getAdvertisement(request: request)
@@ -192,7 +194,13 @@ extension AdvertisementViewController {
 @MainActor
 extension AdvertisementViewController: AdvertisementDisplayLogic {
 	
+	func displayError(error: Error) async {
+		state = .ERROR
+		hideLoader()
+	}
+	
 	func displayAdvertisement(viewModel: Advertisement.Advertisement.ViewModel) async {
+		state = .CONTENT
 		hideLoader()
 		let advertisement = viewModel.advertisement
 		nameLabel.text = advertisement.title

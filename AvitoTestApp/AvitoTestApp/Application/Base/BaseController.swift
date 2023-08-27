@@ -7,13 +7,14 @@
 
 import UIKit
 
+enum ScreenState: Int {
+	case ERROR, LOADING, CONTENT
+}
+
 class BaseController: UIViewController, UIGestureRecognizerDelegate {
 	
 	let loader = UIActivityIndicatorView(style: .medium)
-	
-	enum ScreenState: Int {
-		case ERROR, LOADING, CONTENT
-	}
+	var state: ScreenState = .CONTENT
 	
 	override func loadView() {
 		super.loadView()

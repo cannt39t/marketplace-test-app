@@ -10,10 +10,7 @@ import UIKit
 class BaseCollectionController: UICollectionViewController {
 	
 	private lazy var loader = UIActivityIndicatorView(style: .medium)
-	
-	enum ScreenState: Int {
-		case ERROR, LOADING, CONTENT
-	}
+	var state: ScreenState = .CONTENT
 	
 	override func loadView() {
 		super.loadView()
