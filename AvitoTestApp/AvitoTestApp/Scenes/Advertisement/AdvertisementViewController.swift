@@ -22,6 +22,7 @@ final class AdvertisementViewController: BaseController {
 	
 	private lazy var scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
+		scrollView.horizontalScrollIndicatorInsets = .init(top: 0, left: 0, bottom: -32, right: 0)
 		return scrollView
 	}()
 	
@@ -170,6 +171,17 @@ extension AdvertisementViewController {
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: backImage, style: .plain, target: self, action: #selector(popViewController))
 	}
 	
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		
+		let contentRect: CGRect = scrollView.subviews.reduce(into: .zero) { rect, view in
+			rect = rect.union(view.frame)
+		}
+		print(contentRect)
+		scrollView.contentSize = contentRect.size
+	}
+	
+	
 }
 
 extension AdvertisementViewController {
@@ -207,7 +219,7 @@ extension AdvertisementViewController: AdvertisementDisplayLogic {
 		priceLabel.text = advertisement.price
 		loadImage(from: advertisement.imageURL)
 		locationLabel.text = advertisement.location
-		descriptionLabel.text = advertisement.description
+		descriptionLabel.text = advertisement.description + "\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls"
 	}
 	
 }
@@ -267,7 +279,6 @@ extension AdvertisementViewController {
 			contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
 			contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
 			contentView.widthAnchor.constraint(equalTo: view.widthAnchor),
-			contentView.heightAnchor.constraint(equalTo: view.heightAnchor),
 			
 			advertisementImage.topAnchor.constraint(equalTo: contentView.topAnchor),
 			advertisementImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -306,6 +317,12 @@ extension AdvertisementViewController {
 		])
 	}
 	
+	override func configureAppearance() {
+		super.configureAppearance()
+		
+		scrollView.delegate = self
+	}
+	
 }
 
 @objc extension AdvertisementViewController {
@@ -317,6 +334,16 @@ extension AdvertisementViewController {
 	private func showCallAction() {
 		guard let phone = interactor?.advertisement?.phoneNumber else { return }
 		router?.makePhoneCall(phoneNumber: phone)
+	}
+	
+}
+
+extension AdvertisementViewController: UIScrollViewDelegate {
+	
+	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView.contentOffset.x != 0 {
+			scrollView.contentOffset.x = 0
+		}
 	}
 	
 }

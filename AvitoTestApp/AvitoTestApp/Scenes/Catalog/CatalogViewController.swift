@@ -175,6 +175,7 @@ extension CatalogViewController {
 }
 
 // MARK: Searching
+
 extension CatalogViewController {
 	
 	private func setupSearchController() {
