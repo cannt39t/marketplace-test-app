@@ -20,6 +20,26 @@ final class AdvertisementViewController: BaseController {
 	
 	// MARK: Views
 	
+	private lazy var somethingWentWrongLabel: UILabel = {
+		let label = UILabel()
+		label.isHidden = true
+		label.text = SomethingWentWrong.label.localized
+		label.textColor = .label
+		return label
+	}()
+	
+	private lazy var repeatButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.isHidden = true
+		button.setTitle(Repeat.button.localized, for: .normal)
+		button.setTitleColor(.primary, for: .normal)
+		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+		button.addAction(UIAction(handler: { [weak self] _ in
+			self?.getAdvertisement()
+		}), for: .touchUpInside)
+		return button
+	}()
+	
 	private lazy var scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
 		scrollView.horizontalScrollIndicatorInsets = .init(top: 0, left: 0, bottom: -32, right: 0)
@@ -34,6 +54,7 @@ final class AdvertisementViewController: BaseController {
 	private lazy var advertisementImage: UIImageView = {
 		let imageView = UIImageView()
 		imageView.contentMode = .scaleAspectFill
+		imageView.isUserInteractionEnabled = true
 		return imageView
 	}()
 	
@@ -177,16 +198,19 @@ extension AdvertisementViewController {
 		let contentRect: CGRect = scrollView.subviews.reduce(into: .zero) { rect, view in
 			rect = rect.union(view.frame)
 		}
-		print(contentRect)
-		scrollView.contentSize = contentRect.size
+		
+		let hCont = contentView.heightAnchor.constraint(equalToConstant: contentRect.height)
+		hCont.isActive = true
+		hCont.priority = .defaultHigh
 	}
-	
 	
 }
 
+// MARK: Requests
+
 extension AdvertisementViewController {
 	
-    func getAdvertisement() {
+    private func getAdvertisement() {
 		state = .LOADING
 		showLoader()
 		let request = Advertisement.Advertisement.Request()
@@ -203,33 +227,71 @@ extension AdvertisementViewController {
     
 }
 
+// MARK: - Displaying Logic
+
 @MainActor
 extension AdvertisementViewController: AdvertisementDisplayLogic {
 	
 	func displayError(error: Error) async {
-		state = .ERROR
-		hideLoader()
+		switch state {
+		case .ERROR: return
+		case .CONTENT, .LOADING:
+			state = .ERROR
+			showError()
+			hideLoader()
+		}
 	}
 	
 	func displayAdvertisement(viewModel: Advertisement.Advertisement.ViewModel) async {
+		switch state {
+		case .ERROR:
+			hideError()
+		case .LOADING:
+			hideError()
+			hideLoader()
+		case .CONTENT:
+			return
+		}
+		
 		state = .CONTENT
-		hideLoader()
 		let advertisement = viewModel.advertisement
+		
 		nameLabel.text = advertisement.title
 		priceLabel.text = advertisement.price
 		loadImage(from: advertisement.imageURL)
 		locationLabel.text = advertisement.location
-		descriptionLabel.text = advertisement.description + "\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls\n sdjflkjaflkasjfdls"
+		descriptionLabel.text = advertisement.description
+	}
+	
+	private func showError() {
+		scrollView.isHidden = true
+		somethingWentWrongLabel.isHidden = false
+		repeatButton.isHidden = false
+	}
+	
+	private func hideError() {
+		scrollView.isHidden = false
+		somethingWentWrongLabel.isHidden = true
+		repeatButton.isHidden = true
 	}
 	
 }
+
+// MARK: - Configuration
 
 extension AdvertisementViewController {
 	
 	override func setupViews() {
 		super.setupViews()
 		
-		view.setupView(scrollView)
+		[
+			somethingWentWrongLabel,
+			repeatButton,
+			scrollView
+		].forEach {
+			view.setupView($0)
+		}
+		
 		scrollView.setupView(contentView)
 		
 		[
@@ -313,7 +375,13 @@ extension AdvertisementViewController {
 			
 			descriptionStack.topAnchor.constraint(equalTo: actionStack.bottomAnchor, constant: 16),
 			descriptionStack.leadingAnchor.constraint(equalTo: dataView.leadingAnchor),
-			descriptionStack.trailingAnchor.constraint(equalTo: dataView.trailingAnchor)
+			descriptionStack.trailingAnchor.constraint(equalTo: dataView.trailingAnchor),
+			
+			repeatButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			repeatButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			
+			somethingWentWrongLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			somethingWentWrongLabel.bottomAnchor.constraint(equalTo: repeatButton.topAnchor)
 		])
 	}
 	
@@ -321,9 +389,13 @@ extension AdvertisementViewController {
 		super.configureAppearance()
 		
 		scrollView.delegate = self
+		let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openPhoto))
+		advertisementImage.addGestureRecognizer(tapGestureRecognizer)
 	}
 	
 }
+
+// MARK: - Helpers
 
 @objc extension AdvertisementViewController {
 	
@@ -334,6 +406,11 @@ extension AdvertisementViewController {
 	private func showCallAction() {
 		guard let phone = interactor?.advertisement?.phoneNumber else { return }
 		router?.makePhoneCall(phoneNumber: phone)
+	}
+	
+	private func openPhoto() {
+		let imageURL = interactor?.advertisement?.imageURL
+		router?.openPhoto(imageUrl: imageURL)
 	}
 	
 }

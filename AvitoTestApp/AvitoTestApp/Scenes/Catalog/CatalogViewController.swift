@@ -17,6 +17,24 @@ protocol CatalogDisplayLogic: AnyObject {
 
 final class CatalogViewController: BaseCollectionController {
 	
+	private lazy var somethingWentWrongLabel: UILabel = {
+		let label = UILabel()
+		label.isHidden = true
+		label.text = SomethingWentWrong.label.localized
+		label.textColor = .label
+		return label
+	}()
+	
+	private lazy var repeatButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.isHidden = true
+		button.setTitle(Repeat.button.localized, for: .normal)
+		button.setTitleColor(.primary, for: .normal)
+		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+		button.addAction(UIAction(handler: { [weak self] _ in self?.getAdvertisements() }), for: .touchUpInside)
+		return button
+	}()
+	
 	private var dataSource: CatalogDataSource?
 	private let collectionDelegete = CatalogCollectionViewDelegate()
 	private var searchController: UISearchController!
@@ -28,7 +46,7 @@ final class CatalogViewController: BaseCollectionController {
 	var interactor: CatalogBusinessLogic?
 	var router: (NSObjectProtocol & CatalogRoutingLogic & CatalogDataPassing)?
 	
-	// MARK: Object lifecycle
+	// MARK: - Object lifecycle
 	
 	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 		let layout = CatalogViewController.createCompositionalLayout()
@@ -40,7 +58,7 @@ final class CatalogViewController: BaseCollectionController {
 		fatalError()
 	}
 	
-	// MARK: Setup
+	// MARK: - Setup
 	
 	private func setup() {
 		let viewController = self
@@ -62,6 +80,7 @@ extension CatalogViewController {
 	override func configureAppearance() {
 		super.configureAppearance()
 		
+		collectionDelegete.openAdvCallBack = interactor?.openCallBack
 		collectionView.dataSource = dataSource
 		collectionView.delegate = collectionDelegete
 		collectionView.register(AVAdvertisementCell.self)
@@ -71,6 +90,8 @@ extension CatalogViewController {
 	}
 	
 }
+
+// MARK: - CollectionView Layout
 
 extension CatalogViewController {
 	
@@ -105,14 +126,24 @@ extension CatalogViewController {
 
 }
 
-// MARK: Display logic
+// MARK: - Display logic
 
 @MainActor
 extension CatalogViewController: CatalogDisplayLogic {
 	
 	func displayAdvertisements(viewModel: Catalog.Advertisements.ViewModel) async {
+		switch state {
+		case .ERROR:
+			hideError()
+		case .LOADING:
+			hideError()
+			hideLoader()
+		case .CONTENT:
+			return
+		}
+		
 		state = .CONTENT
-		hideLoader()
+		
 		dataSource = CatalogDataSource(advertisements: viewModel.advertisements)
 		collectionDelegete.router = router
 		collectionView.dataSource = dataSource
@@ -127,13 +158,28 @@ extension CatalogViewController: CatalogDisplayLogic {
 	}
 	
 	func displayError(error: Error) async {
-		state = .ERROR
-		hideLoader()
+		switch state {
+		case .ERROR: return
+		case .CONTENT, .LOADING:
+			state = .ERROR
+			showError()
+			hideLoader()
+		}
+	}
+	
+	private func showError() {
+		somethingWentWrongLabel.isHidden = false
+		repeatButton.isHidden = false
+	}
+	
+	private func hideError() {
+		somethingWentWrongLabel.isHidden = true
+		repeatButton.isHidden = true
 	}
 	
 }
 
-// MARK: View lifecycle
+// MARK: - View lifecycle
 
 extension CatalogViewController {
 	
@@ -145,13 +191,12 @@ extension CatalogViewController {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
 		collectionView.reloadData()
 	}
 	
 }
     
-// MARK: Requests
+// MARK: - Requests
 
 extension CatalogViewController {
 	
@@ -164,17 +209,7 @@ extension CatalogViewController {
 	
 }
 
-// MARK: Routing
-
-extension CatalogViewController {
-	
-	func routeToProduct(with id: Int) {
-		
-	}
-	
-}
-
-// MARK: Searching
+// MARK: - Searching
 
 extension CatalogViewController {
 	
@@ -196,6 +231,35 @@ extension CatalogViewController: UISearchResultsUpdating {
 			  !searchText.isEmpty else {
 			return
 		}
+	}
+	
+}
+
+// MARK: - Configuration
+
+extension CatalogViewController {
+	
+	override func setupViews() {
+		super.setupViews()
+		
+		[
+			somethingWentWrongLabel,
+			repeatButton,
+		].forEach {
+			view.setupView($0)
+		}
+	}
+	
+	override func constraintViews() {
+		super.constraintViews()
+		
+		NSLayoutConstraint.activate([
+			repeatButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			repeatButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			
+			somethingWentWrongLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			somethingWentWrongLabel.bottomAnchor.constraint(equalTo: repeatButton.topAnchor)
+		])
 	}
 	
 }

@@ -26,7 +26,7 @@ final class AdvertisementPresenter: AdvertisementPresentationLogic {
         await viewController?.displayAdvertisement(viewModel: viewModel)
     }
 	
-	func presentError(response: Advertisement.Advertisement.Response) {
-		
+	func presentError(response: Advertisement.Advertisement.Response) async {
+		await viewController?.displayError(error: response.error!)
 	}
 }

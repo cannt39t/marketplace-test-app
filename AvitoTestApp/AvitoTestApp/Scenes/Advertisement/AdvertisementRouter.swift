@@ -13,6 +13,7 @@ import UIKit
 
 @objc protocol AdvertisementRoutingLogic {
 	func makePhoneCall(phoneNumber: String)
+	func openPhoto(imageUrl: String?)
 }
 
 protocol AdvertisementDataPassing {
@@ -34,4 +35,9 @@ final class AdvertisementRouter: NSObject, AdvertisementRoutingLogic, Advertisem
 		}
 	}
 
+	func openPhoto(imageUrl: String?) {
+		let vc = PhotoDetailViewController(imageURL: imageUrl)
+		viewController?.navigationController?.pushViewController(vc, animated: true)
+	}
+	
 }

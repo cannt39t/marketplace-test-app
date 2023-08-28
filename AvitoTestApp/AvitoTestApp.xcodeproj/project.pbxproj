@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		050794A32A9D20F500099998 /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050794A22A9D20F500099998 /* PhotoDetailViewController.swift */; };
 		050F07092A98D68C0093C291 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F07082A98D68C0093C291 /* AppDelegate.swift */; };
 		050F070B2A98D68C0093C291 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F070A2A98D68C0093C291 /* SceneDelegate.swift */; };
 		050F07122A98D68D0093C291 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 050F07112A98D68D0093C291 /* Assets.xcassets */; };
@@ -56,6 +57,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		050794A22A9D20F500099998 /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; };
 		050F07052A98D68C0093C291 /* AvitoTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AvitoTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		050F07082A98D68C0093C291 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		050F070A2A98D68C0093C291 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +120,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		050794A12A9D20C600099998 /* PhotoDetail */ = {
+			isa = PBXGroup;
+			children = (
+				050794A22A9D20F500099998 /* PhotoDetailViewController.swift */,
+			);
+			path = PhotoDetail;
+			sourceTree = "<group>";
+		};
 		050F06FC2A98D68C0093C291 = {
 			isa = PBXGroup;
 			children = (
@@ -159,6 +169,7 @@
 		050F071D2A98D7DE0093C291 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				050794A12A9D20C600099998 /* PhotoDetail */,
 				050F07312A993EDA0093C291 /* TabBar */,
 				050F071E2A98D7E40093C291 /* Catalog */,
 				05F7A5422A9AA49000FBD70A /* Advertisement */,
@@ -471,6 +482,7 @@
 				050F07662A99D6A30093C291 /* BaseCollectionViewCell.swift in Sources */,
 				050F07542A995DF30093C291 /* ChatViewController.swift in Sources */,
 				050F076D2A99E0700093C291 /* CatalogCollectionViewDelegate.swift in Sources */,
+				050794A32A9D20F500099998 /* PhotoDetailViewController.swift in Sources */,
 				05F7A54D2A9AA71300FBD70A /* AdvertisementViewController.swift in Sources */,
 				050F074E2A995D6C0093C291 /* CatalogWorker.swift in Sources */,
 				05F7A5512A9AAD6D00FBD70A /* HttpError.swift in Sources */,

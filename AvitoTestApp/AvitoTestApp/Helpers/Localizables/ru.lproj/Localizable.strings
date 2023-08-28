@@ -23,3 +23,6 @@
 "Decription_header" = "Описание";
 
 "Viewed_advCell" = "Просмотрено";
+
+"SomethingWentWrong_label" = "Что-то пошло не так";
+"Repeat_button" = "Повторить";

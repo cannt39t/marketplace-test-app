@@ -25,7 +25,7 @@ final class CatalogPresenter: CatalogPresentationLogic {
     }
 	
 	func presentError(response: Catalog.Advertisements.Response) async {
-		
+		await viewController?.displayError(error: response.error!)
 	}
 	
 	func updateCity(city: String) async {

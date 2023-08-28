@@ -164,7 +164,6 @@ extension AVAdvertisementCell {
 			isViewedLabel.widthAnchor.constraint(equalToConstant: 90),
 			isViewedLabel.heightAnchor.constraint(equalToConstant: 17),
 		])
-		
 	}
 	
 	override func configureAppearance() {
@@ -202,13 +201,15 @@ extension AVAdvertisementCell {
 		advertisementImage.sd_setImage(with: imageURL, placeholderImage: nil, options: [.highPriority])
 	}
 	
-	private func checkedIsFavorite(id: String) -> Bool {
-		if let adv = CoreDataMamanager.shared.fetchAdv(with: id) {
-			return adv.isFavorite
-		} else {
-			return false
+	private func convertDateString(_ dateString: String) -> String {
+		if let date = DateFormatter.yyyyMMddNotHyphenated.date(from: dateString) {
+			return DateFormatter.MMMMd.string(from: date).capitalized
 		}
+		
+		return dateString
 	}
+	
+	// Немного выйти за рамки архитектуры, чтобы не тянуть кложуры с интерактора
 	
 	private func checkedIsViewed(id: String) -> Bool {
 		if let adv = CoreDataMamanager.shared.fetchAdv(with: id) {
@@ -218,11 +219,12 @@ extension AVAdvertisementCell {
 		}
 	}
 	
-	private func convertDateString(_ dateString: String) -> String {
-		if let date = DateFormatter.yyyyMMddNotHyphenated.date(from: dateString) {
-			return DateFormatter.MMMMd.string(from: date).capitalized
+	private func checkedIsFavorite(id: String) -> Bool {
+		if let adv = CoreDataMamanager.shared.fetchAdv(with: id) {
+			return adv.isFavorite
+		} else {
+			return false
 		}
-		
-		return dateString
 	}
+	
 }

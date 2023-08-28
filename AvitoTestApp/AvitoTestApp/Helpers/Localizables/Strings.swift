@@ -109,3 +109,19 @@ enum Viewed: String {
 		NSLocalizedString(String(describing: Self.self) + "_\(rawValue)", comment: "")
 	}
 }
+
+enum SomethingWentWrong: String {
+	case label
+	
+	var localized: String {
+		NSLocalizedString(String(describing: Self.self) + "_\(rawValue)", comment: "")
+	}
+}
+
+enum Repeat: String {
+	case button
+	
+	var localized: String {
+		NSLocalizedString(String(describing: Self.self) + "_\(rawValue)", comment: "")
+	}
+}
