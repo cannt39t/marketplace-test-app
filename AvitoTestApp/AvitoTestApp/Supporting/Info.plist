@@ -4,6 +4,8 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Данное приложение использует ваше местоположение для определения города, в котором вы находитесь.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Данное приложение запрашивает возможность сохранять фотографии</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

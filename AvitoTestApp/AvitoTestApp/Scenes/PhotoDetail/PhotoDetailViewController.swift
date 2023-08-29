@@ -29,11 +29,23 @@ final class PhotoDetailViewController: BaseController {
 	}
 	
 	private func loadImage(from URLString: String?) {
+		state = .LOADING
 		guard let imageURLString = URLString, let imageURL = URL(string: imageURLString) else {
 			imageView.image = .defaultImage.withRenderingMode(.alwaysOriginal).withTintColor(.label2.withAlphaComponent(0.25))
+			state = .ERROR
 			return
 		}
-		imageView.sd_setImage(with: imageURL, placeholderImage: nil, options: [.highPriority])
+		imageView.sd_setImage(with: imageURL, placeholderImage: nil, options: [.highPriority]) { [weak self] image, error, _, _ in
+			if error != nil {
+				self?.state = .ERROR
+				return
+			}
+			
+			if image != nil {
+				self?.state = .CONTENT
+				return
+			}
+		}
 	}
 	
 }

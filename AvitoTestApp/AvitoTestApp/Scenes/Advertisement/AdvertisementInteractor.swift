@@ -9,10 +9,13 @@
 
 
 import UIKit
-
+import CoreLocation
 
 protocol AdvertisementBusinessLogic {
     func getAdvertisement(request: Advertisement.Advertisement.Request)
+	func toggleFavorite()
+	func checkedIsFavorite() -> Bool?
+	func getCoordinatesOfAdvertisement(completion: @escaping (CLLocationCoordinate2D?) -> Void)
 }
 
 protocol AdvertisementDataStore {
@@ -24,6 +27,9 @@ final class AdvertisementInteractor: AdvertisementBusinessLogic, AdvertisementDa
 	
     var presenter: AdvertisementPresentationLogic?
     var worker: AdvertisementWorker = AdvertisementWorker()
+	
+	let coreDataManager = CoreDataMamanager.shared
+	let locationManager = LocationManager.shared
 	var id: String?
 	var advertisement: AVAdvertisement?
     
@@ -45,4 +51,40 @@ final class AdvertisementInteractor: AdvertisementBusinessLogic, AdvertisementDa
 			}
 		}
     }
+	
+	func toggleFavorite() {
+		guard let advertisement = advertisement else { return }
+		if let adv = coreDataManager.fetchAdv(with: advertisement.id) {
+			coreDataManager.updataAdv(with: advertisement.id, newIsFavorite: !adv.isFavorite, newIsViewed: adv.isViewed)
+		} else {
+			coreDataManager.createAdvInfo(advertisement.id, isViewed: false, isFavorite: true)
+		}
+	}
+	
+	func checkedIsFavorite() -> Bool? {
+		guard let advertisement = advertisement else { return nil }
+		if let adv = CoreDataMamanager.shared.fetchAdv(with: advertisement.id) {
+			return adv.isFavorite
+		} else {
+			return false
+		}
+	}
+	
+	func getCoordinatesOfAdvertisement(completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+		guard let advertisement = advertisement else {
+			completion(nil)
+			return
+		}
+		
+		locationManager.getCoordinateFrom(address: "\(advertisement.location), \(advertisement.address)") { coordinate, error in
+			if error != nil {
+				completion(nil)
+			} else if let coordinate = coordinate {
+				completion(coordinate)
+			} else {
+				completion(nil)
+			}
+		}
+	}
+	
 }

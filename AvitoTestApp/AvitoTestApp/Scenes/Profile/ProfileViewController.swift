@@ -7,10 +7,8 @@
 //  see https://github.com/cannt39t
 //
 
-
 import UIKit
-
 
 protocol ProfileDisplayLogic: AnyObject { }
 
-class ProfileViewController: BaseController, ProfileDisplayLogic { }
+final class ProfileViewController: BaseController, ProfileDisplayLogic { }

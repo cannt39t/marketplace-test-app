@@ -9,7 +9,7 @@
 
 import UIKit
 
-@objc protocol CatalogRoutingLogic {
+protocol CatalogRoutingLogic {
 	func navigateToAdvertisementViewController(destination: AdvertisementViewController)
 }
 
@@ -21,8 +21,6 @@ final class CatalogRouter: NSObject, CatalogRoutingLogic, CatalogDataPassing {
 	
     weak var viewController: CatalogViewController?
     var dataStore: CatalogDataStore?
-    
-    // MARK: Navigation
     
 	func navigateToAdvertisementViewController(destination: AdvertisementViewController) {
 		viewController?.navigationController?.pushViewController(destination, animated: true)

@@ -177,20 +177,6 @@ extension AVAdvertisementCell {
 	
 }
 
-@objc extension AVAdvertisementCell {
-	
-	func tappedFavoriteButton() {
-		favoriteButton.isSelected.toggle()
-		guard let advertisement = advertisement else { return }
-		if let adv = CoreDataMamanager.shared.fetchAdv(with: advertisement.id) {
-			CoreDataMamanager.shared.updataAdv(with: advertisement.id, newIsFavorite: !adv.isFavorite, newIsViewed: adv.isViewed)
-		} else {
-			CoreDataMamanager.shared.createAdvInfo(advertisement.id, isViewed: false, isFavorite: true)
-		}
-	}
-	
-}
-
 extension AVAdvertisementCell {
 	
 	private func loadImage(from URLString: String?) {
@@ -224,6 +210,22 @@ extension AVAdvertisementCell {
 			return adv.isFavorite
 		} else {
 			return false
+		}
+	}
+	
+}
+
+// И здесь тоже
+
+@objc extension AVAdvertisementCell {
+	
+	func tappedFavoriteButton() {
+		favoriteButton.isSelected.toggle()
+		guard let advertisement = advertisement else { return }
+		if let adv = CoreDataMamanager.shared.fetchAdv(with: advertisement.id) {
+			CoreDataMamanager.shared.updataAdv(with: advertisement.id, newIsFavorite: !adv.isFavorite, newIsViewed: adv.isViewed)
+		} else {
+			CoreDataMamanager.shared.createAdvInfo(advertisement.id, isViewed: false, isFavorite: true)
 		}
 	}
 	

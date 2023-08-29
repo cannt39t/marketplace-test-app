@@ -125,3 +125,12 @@ enum Repeat: String {
 		NSLocalizedString(String(describing: Self.self) + "_\(rawValue)", comment: "")
 	}
 }
+
+enum Location: String {
+	case error
+	
+	var localized: String {
+		NSLocalizedString(String(describing: Self.self) + "_\(rawValue)", comment: "")
+	}
+}
+

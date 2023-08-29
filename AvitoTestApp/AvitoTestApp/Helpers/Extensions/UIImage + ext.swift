@@ -55,4 +55,8 @@ extension UIImage {
 		UIImage(systemName: "message.fill")!
 	}
 	
+	static var share: UIImage {
+		UIImage(systemName: "square.and.arrow.up")!
+	}
+	
 }

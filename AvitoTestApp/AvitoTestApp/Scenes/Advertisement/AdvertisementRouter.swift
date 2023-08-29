@@ -7,13 +7,15 @@
 //  see https://github.com/cannt39t
 //
 
-
 import UIKit
+import CoreLocation
 
-
-@objc protocol AdvertisementRoutingLogic {
+protocol AdvertisementRoutingLogic {
 	func makePhoneCall(phoneNumber: String)
 	func openPhoto(imageUrl: String?)
+	func openChat()
+	func share(with data: [Any])
+	func openLocation(coordinates: CLLocationCoordinate2D?)
 }
 
 protocol AdvertisementDataPassing {
@@ -37,6 +39,22 @@ final class AdvertisementRouter: NSObject, AdvertisementRoutingLogic, Advertisem
 
 	func openPhoto(imageUrl: String?) {
 		let vc = PhotoDetailViewController(imageURL: imageUrl)
+		viewController?.navigationController?.pushViewController(vc, animated: true)
+	}
+	
+	func openChat() {
+		let tabBarVC = viewController?.tabBarController as? TabBarViewController
+		tabBarVC?.switchToTab(.chat)
+	}
+	
+	func share(with data: [Any]) {
+		let vc = UIActivityViewController(activityItems: data, applicationActivities: [])
+		vc.popoverPresentationController?.barButtonItem = viewController?.navigationItem.rightBarButtonItem
+		viewController?.present(vc, animated: true)
+	}
+	
+	func openLocation(coordinates: CLLocationCoordinate2D?) {
+		let vc = LocationController(coordinates: coordinates)
 		viewController?.navigationController?.pushViewController(vc, animated: true)
 	}
 	

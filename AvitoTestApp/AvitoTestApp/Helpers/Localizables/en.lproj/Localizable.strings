@@ -26,3 +26,5 @@
 
 "SomethingWentWrong_label" = "Something went wront";
 "Repeat_button" = "Repeat";
+
+"Location_error" = "Could not find location";

@@ -31,6 +31,11 @@ final class LocationManager: NSObject, ObservableObject {
 			locationManager.requestLocation()
 		}
 	}
+	
+	func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
+		CLGeocoder().geocodeAddressString(address) { completion($0?.first?.location?.coordinate, $1) }
+	}
+	
 }
 
 extension LocationManager: CLLocationManagerDelegate {
@@ -57,7 +62,6 @@ extension LocationManager: CLLocationManagerDelegate {
 			break
 		}
 	}
-	
 	
 	func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
 		print("Location update failed with error: \(error.localizedDescription)")

@@ -26,3 +26,5 @@
 
 "SomethingWentWrong_label" = "Что-то пошло не так";
 "Repeat_button" = "Повторить";
+
+"Location_error" = "К сожалению не получилось найти локацию на карте";

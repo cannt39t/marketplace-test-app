@@ -18,7 +18,7 @@ protocol AdvertisementDisplayLogic: AnyObject {
 
 final class AdvertisementViewController: BaseController {
 	
-	// MARK: Views
+	// MARK: - Views
 	
 	private lazy var somethingWentWrongLabel: UILabel = {
 		let label = UILabel()
@@ -90,6 +90,9 @@ final class AdvertisementViewController: BaseController {
 		button.setTitle(Place.showButton.localized, for: .normal)
 		button.setTitleColor(.primary, for: .normal)
 		button.titleLabel?.font = .systemFont(ofSize: 19, weight: .regular)
+		button.addAction(UIAction(handler: { [weak self] _ in
+			self?.presentLocation()
+		}), for: .touchUpInside)
 		return button
 	}()
 	
@@ -113,7 +116,9 @@ final class AdvertisementViewController: BaseController {
 		filled.image = .chatFill.withTintColor(.white, renderingMode: .alwaysOriginal)
 		filled.imagePlacement = .leading
 		filled.imagePadding = 8
-		let button = UIButton(configuration: filled, primaryAction: nil)
+		let button = UIButton(configuration: filled, primaryAction:
+								UIAction(handler: { [weak self] _ in self?.openChat() })
+		)
 		return button
 	}()
 	
@@ -149,7 +154,7 @@ final class AdvertisementViewController: BaseController {
 	var interactor: (AdvertisementBusinessLogic & AdvertisementDataStore)?
 	var router: (NSObjectProtocol & AdvertisementRoutingLogic & AdvertisementDataPassing)?
 	
-	// MARK: Object lifecycle
+	// MARK: - Object lifecycle
 	
 	init(id: String) {
 		super.init(nibName: nil, bundle: nil)
@@ -160,7 +165,7 @@ final class AdvertisementViewController: BaseController {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	// MARK: Setup
+	// MARK: - Setup
 	
 	private func setup(id: String) {
 		let viewController = self
@@ -177,7 +182,7 @@ final class AdvertisementViewController: BaseController {
 	}
 }
     
-// MARK: View lifecycle
+// MARK: - View lifecycle
     
 extension AdvertisementViewController {
 	
@@ -194,11 +199,9 @@ extension AdvertisementViewController {
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
-		
 		let contentRect: CGRect = scrollView.subviews.reduce(into: .zero) { rect, view in
 			rect = rect.union(view.frame)
 		}
-		
 		let hCont = contentView.heightAnchor.constraint(equalToConstant: contentRect.height)
 		hCont.isActive = true
 		hCont.priority = .defaultHigh
@@ -206,7 +209,7 @@ extension AdvertisementViewController {
 	
 }
 
-// MARK: Requests
+// MARK: - Requests
 
 extension AdvertisementViewController {
 	
@@ -261,6 +264,8 @@ extension AdvertisementViewController: AdvertisementDisplayLogic {
 		loadImage(from: advertisement.imageURL)
 		locationLabel.text = advertisement.location
 		descriptionLabel.text = advertisement.description
+		
+		setupRightNavBarButtons()
 	}
 	
 	private func showError() {
@@ -273,6 +278,19 @@ extension AdvertisementViewController: AdvertisementDisplayLogic {
 		scrollView.isHidden = false
 		somethingWentWrongLabel.isHidden = true
 		repeatButton.isHidden = true
+	}
+	
+	private func setupRightNavBarButtons() {
+		guard let isFavorite = interactor?.checkedIsFavorite() else {
+			navigationController?.navigationItem.rightBarButtonItems = []
+			return
+		}
+		let favoriteImage: UIImage = isFavorite ? .suitHeartFill.withTintColor(.heart, renderingMode: .alwaysOriginal) : .suitHeart.withTintColor(.label, renderingMode: .alwaysOriginal)
+		let favoriteButton = UIBarButtonItem(image: favoriteImage, style: .plain, target: self, action: #selector(toggleFavoriteAction))
+		
+		let shareImage: UIImage = .share.withTintColor(.label, renderingMode: .alwaysOriginal)
+		let shareButton = UIBarButtonItem(image: shareImage, style: .plain, target: self, action: #selector(presentShareAction))
+		navigationItem.rightBarButtonItems = [favoriteButton, shareButton]
 	}
 	
 }
@@ -388,7 +406,6 @@ extension AdvertisementViewController {
 	override func configureAppearance() {
 		super.configureAppearance()
 		
-		scrollView.delegate = self
 		let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openPhoto))
 		advertisementImage.addGestureRecognizer(tapGestureRecognizer)
 	}
@@ -413,14 +430,42 @@ extension AdvertisementViewController {
 		router?.openPhoto(imageUrl: imageURL)
 	}
 	
-}
-
-extension AdvertisementViewController: UIScrollViewDelegate {
+	private func openChat() {
+		router?.openChat()
+	}
 	
-	func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		if scrollView.contentOffset.x != 0 {
-			scrollView.contentOffset.x = 0
+	private func toggleFavoriteAction() {
+		interactor?.toggleFavorite()
+		setupRightNavBarButtons()
+	}
+	
+	private func presentShareAction() {
+		guard let adv = interactor?.advertisement else { return }
+		let image = advertisementImage.image?.jpegData(compressionQuality: 0.8)
+		
+		var data: [Any] = [
+			"https://www.avito.ru/",
+			adv.title,
+			adv.description,
+			adv.location,
+			adv.location,
+		]
+		
+		if let image {
+			data.append(image)
 		}
+		
+		router?.share(with: data)
+	}
+	
+	private func presentLocation() {
+		showLoader()
+		state = .LOADING
+		interactor?.getCoordinatesOfAdvertisement(completion: { [weak self] coordinates in
+			self?.router?.openLocation(coordinates: coordinates)
+			self?.hideLoader()
+			self?.state = .CONTENT
+		})
 	}
 	
 }

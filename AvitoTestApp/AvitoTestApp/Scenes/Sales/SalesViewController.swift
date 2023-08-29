@@ -7,9 +7,7 @@
 //  see https://github.com/cannt39t
 //
 
-
 import UIKit
-
 
 protocol SalesDisplayLogic: AnyObject { }
 
