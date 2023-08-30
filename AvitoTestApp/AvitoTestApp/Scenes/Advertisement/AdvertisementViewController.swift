@@ -427,6 +427,9 @@ extension AdvertisementViewController {
 	}
 	
 	private func toggleFavoriteAction() {
+		let feedbackGenerator = UINotificationFeedbackGenerator()
+		feedbackGenerator.prepare()
+		feedbackGenerator.notificationOccurred(.success)
 		interactor?.toggleFavorite()
 		setupRightNavBarButtons()
 	}
