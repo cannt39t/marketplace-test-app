@@ -10,7 +10,7 @@ import CoreData
 
 final class CoreDataMamanager: NSObject {
 	
-	public static let shared = CoreDataMamanager()
+	static let shared = CoreDataMamanager()
 	private override init() {}
 	
 	private var appDelegate: AppDelegate {

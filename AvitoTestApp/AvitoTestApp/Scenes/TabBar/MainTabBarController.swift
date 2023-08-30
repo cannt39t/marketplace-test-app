@@ -51,7 +51,7 @@ final class TabBarViewController: UITabBarController {
 		}
 	}
 	
-	public func switchToTab(_ tab: Tabs) {
+	func switchToTab(_ tab: Tabs) {
 		selectedIndex = tab.rawValue
 	}
 	

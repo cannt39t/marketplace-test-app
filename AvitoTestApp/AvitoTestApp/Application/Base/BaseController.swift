@@ -37,6 +37,7 @@ extension BaseController {
 	
 	func showLoader() {
 		view.isUserInteractionEnabled = false
+		view.bringSubviewToFront(loader)
 		loader.startAnimating()
 	}
 	

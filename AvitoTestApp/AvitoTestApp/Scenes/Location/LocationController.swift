@@ -78,8 +78,6 @@ extension LocationController {
 		super.configureAppearance()
 		
 		navigationItem.largeTitleDisplayMode = .never
-		view.backgroundColor = .background
-		
 		guard let coordinates = coordinates else {
 			state = .ERROR
 			couldNotFoundPlaceLabel.isHidden = false

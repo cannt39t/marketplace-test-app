@@ -12,6 +12,9 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+		UINavigationBar.appearance().tintColor = .primary
+		UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.primary]
+		
 		return true
 	}
 	

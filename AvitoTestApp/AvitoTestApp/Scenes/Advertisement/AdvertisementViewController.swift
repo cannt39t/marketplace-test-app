@@ -42,7 +42,7 @@ final class AdvertisementViewController: BaseController {
 	
 	private lazy var scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
-		scrollView.horizontalScrollIndicatorInsets = .init(top: 0, left: 0, bottom: -32, right: 0)
+		scrollView.showsVerticalScrollIndicator = false
 		return scrollView
 	}()
 	
@@ -148,6 +148,7 @@ final class AdvertisementViewController: BaseController {
 		let stack = UIStackView()
 		stack.axis = .vertical
 		stack.spacing = 8
+		stack.distribution = .fillProportionally
 		return stack
 	}()
 	
@@ -195,16 +196,6 @@ extension AdvertisementViewController {
 		super.viewWillAppear(animated)
 		let backImage: UIImage = .backArrow.withTintColor(.label, renderingMode: .alwaysOriginal)
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: backImage, style: .plain, target: self, action: #selector(popViewController))
-	}
-	
-	override func viewDidLayoutSubviews() {
-		super.viewDidLayoutSubviews()
-		let contentRect: CGRect = scrollView.subviews.reduce(into: .zero) { rect, view in
-			rect = rect.union(view.frame)
-		}
-		let hCont = contentView.heightAnchor.constraint(equalToConstant: contentRect.height)
-		hCont.isActive = true
-		hCont.priority = .defaultHigh
 	}
 	
 }
@@ -260,9 +251,9 @@ extension AdvertisementViewController: AdvertisementDisplayLogic {
 		let advertisement = viewModel.advertisement
 		
 		nameLabel.text = advertisement.title
-		priceLabel.text = advertisement.price
+		priceLabel.text = formatPrice(advertisement.price)
 		loadImage(from: advertisement.imageURL)
-		locationLabel.text = advertisement.location
+		locationLabel.text = advertisement.location + ", " + advertisement.address
 		descriptionLabel.text = advertisement.description
 		
 		setupRightNavBarButtons()
@@ -394,6 +385,7 @@ extension AdvertisementViewController {
 			descriptionStack.topAnchor.constraint(equalTo: actionStack.bottomAnchor, constant: 16),
 			descriptionStack.leadingAnchor.constraint(equalTo: dataView.leadingAnchor),
 			descriptionStack.trailingAnchor.constraint(equalTo: dataView.trailingAnchor),
+			descriptionStack.bottomAnchor.constraint(equalTo: dataView.bottomAnchor, constant: -64),
 			
 			repeatButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 			repeatButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),

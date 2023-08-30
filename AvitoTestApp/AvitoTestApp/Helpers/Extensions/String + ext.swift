@@ -16,3 +16,18 @@ func formatPhoneNumber(_ phoneNumber: String) -> String {
 		return "+" + digits
 	}
 }
+
+func formatPrice(_ input: String) -> String {
+	let formatter = NumberFormatter()
+	formatter.numberStyle = .decimal
+	formatter.groupingSeparator = " "
+	
+	let components = input.components(separatedBy: " ")
+	if components.count == 2, let amount = formatter.number(from: components[0]) {
+		let formattedAmount = formatter.string(from: amount) ?? ""
+		return "\(formattedAmount) \(components[1])"
+	}
+	
+	return input
+}
+

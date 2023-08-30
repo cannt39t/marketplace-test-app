@@ -89,7 +89,7 @@ final class AVAdvertisementCell: BaseCollectionViewCell {
 		
 		nameLabel.text = advertisement.title
 		placeLabel.text = advertisement.location
-		priceLabel.text = advertisement.price
+		priceLabel.text = formatPrice(advertisement.price)
 		loadImage(from: advertisement.imageURL)
 		
 		favoriteButton.isSelected = checkedIsFavorite(id: advertisement.id)
