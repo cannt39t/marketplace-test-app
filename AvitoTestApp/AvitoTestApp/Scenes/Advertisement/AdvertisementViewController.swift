@@ -414,7 +414,9 @@ extension AdvertisementViewController {
 	
 	private func showCallAction() {
 		guard let phone = interactor?.advertisement?.phoneNumber else { return }
+		showLoader()
 		router?.makePhoneCall(phoneNumber: phone)
+		hideLoader()
 	}
 	
 	private func openPhoto() {
@@ -450,7 +452,9 @@ extension AdvertisementViewController {
 			data.append(image)
 		}
 		
+		showLoader()
 		router?.share(with: data)
+		hideLoader()
 	}
 	
 	private func presentLocation() {
