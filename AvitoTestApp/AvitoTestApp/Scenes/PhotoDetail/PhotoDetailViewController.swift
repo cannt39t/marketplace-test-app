@@ -10,6 +10,13 @@ import SDWebImage
 
 final class PhotoDetailViewController: BaseController {
 	
+	private lazy var scrollView: UIScrollView = {
+		let scrollView = UIScrollView()
+		scrollView.minimumZoomScale = 1.0
+		scrollView.maximumZoomScale = 3.0
+		return scrollView
+	}()
+	
 	private lazy var imageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.contentMode = .scaleAspectFit
@@ -80,17 +87,25 @@ extension PhotoDetailViewController {
 	override func setupViews() {
 		super.setupViews()
 		
-		view.setupView(imageView)
+		view.setupView(scrollView)
+		scrollView.setupView(imageView)
 	}
 	
 	override func constraintViews() {
 		super.constraintViews()
 		
 		NSLayoutConstraint.activate([
-			imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+			scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+			scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+			
+			imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+			imageView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+			imageView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+			imageView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+			imageView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+			imageView.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor)
 		])
 	}
 	
@@ -101,7 +116,16 @@ extension PhotoDetailViewController {
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
 		view.backgroundColor = .black
 		
+		scrollView.delegate = self
 		loadImage(from: imageURL)
+	}
+	
+}
+
+extension PhotoDetailViewController: UIScrollViewDelegate {
+	
+	func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+		return imageView
 	}
 	
 }

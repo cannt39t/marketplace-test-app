@@ -31,6 +31,7 @@ extension BaseCollectionController {
 	
 	func showLoader() {
 		view.isUserInteractionEnabled = false
+		view.bringSubviewToFront(loader)
 		loader.startAnimating()
 	}
 	
