@@ -75,22 +75,6 @@ final class CatalogViewController: BaseCollectionController {
 	
 }
 
-extension CatalogViewController {
-	
-	override func configureAppearance() {
-		super.configureAppearance()
-		
-		collectionDelegete.openAdvCallBack = interactor?.openCallBack
-		collectionView.dataSource = dataSource
-		collectionView.delegate = collectionDelegete
-		collectionView.register(AVAdvertisementCell.self)
-		collectionView.backgroundColor = .background
-		
-		setupSearchController()
-	}
-	
-}
-
 // MARK: - CollectionView Layout
 
 extension CatalogViewController {
@@ -260,6 +244,18 @@ extension CatalogViewController {
 			somethingWentWrongLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 			somethingWentWrongLabel.bottomAnchor.constraint(equalTo: repeatButton.topAnchor)
 		])
+	}
+	
+	override func configureAppearance() {
+		super.configureAppearance()
+		
+		collectionDelegete.openAdvCallBack = interactor?.openCallBack
+		collectionView.dataSource = dataSource
+		collectionView.delegate = collectionDelegete
+		collectionView.register(AVAdvertisementCell.self)
+		collectionView.backgroundColor = .background
+		
+		setupSearchController()
 	}
 	
 }
