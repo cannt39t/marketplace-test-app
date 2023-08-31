@@ -439,11 +439,11 @@ extension AdvertisementViewController {
 		let image = advertisementImage.image?.jpegData(compressionQuality: 0.8)
 		
 		var data: [Any] = [
-			"https://www.avito.ru/",
+			URL(string: "https://www.avito.ru/") ?? "",
 			adv.title,
 			adv.description,
 			adv.location,
-			adv.location,
+			adv.address,
 		]
 		
 		if let image {

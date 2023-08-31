@@ -15,6 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		UINavigationBar.appearance().tintColor = .primary
 		UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.primary]
 		
+		// Эта штука нужна для того, чтобы при первом запуске приложения, когда первый раз будет показываться UIActivityViewController, это не занимало 4-5 секунд
+		let lagfreeAVC: UIActivityViewController = UIActivityViewController(activityItems:  ["start"], applicationActivities: nil)
+		lagfreeAVC.becomeFirstResponder()
+		lagfreeAVC.resignFirstResponder()
+		
 		return true
 	}
 	

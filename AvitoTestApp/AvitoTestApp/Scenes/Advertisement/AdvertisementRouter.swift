@@ -49,7 +49,7 @@ final class AdvertisementRouter: NSObject, AdvertisementRoutingLogic, Advertisem
 	
 	func share(with data: [Any]) {
 		let vc = UIActivityViewController(activityItems: data, applicationActivities: [])
-		vc.popoverPresentationController?.barButtonItem = viewController?.navigationItem.rightBarButtonItem
+		vc.popoverPresentationController?.sourceView = viewController?.view
 		viewController?.present(vc, animated: true)
 	}
 	
